@@ -30,7 +30,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
   Future<void> loadStudents() async {
     try {
-      final fetchedStudents = await StudentService.fetchStudents(widget.department, widget.room);
+      final fetchedStudents =
+      await StudentService.fetchStudents(widget.department, widget.room);
       setState(() {
         students = fetchedStudents;
         isLoading = false;
@@ -43,6 +44,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
     }
   }
 
+  // Update the student's verification status
   void _handleVerificationResult(String rollNumber, bool isVerified) {
     setState(() {
       final student = students.firstWhere((s) => s.rollNumber == rollNumber);
@@ -67,29 +69,43 @@ class _StudentListScreenState extends State<StudentListScreen> {
           return Card(
             margin: const EdgeInsets.all(8),
             child: ListTile(
-              leading: CircleAvatar(child: Text(student.name[0])),
+              leading: CircleAvatar(
+                child: Text(student.name[0].toUpperCase()),
+              ),
               title: Text(student.name),
               subtitle: Text("Roll No: ${student.rollNumber}"),
               trailing: ElevatedButton.icon(
-                icon: Icon(student.isVerified ? Icons.check : Icons.verified_user),
-                label: Text(student.isVerified ? "Verified" : "Verify"),
+                icon: Icon(
+                  student.isVerified
+                      ? Icons.check
+                      : Icons.verified_user,
+                ),
+                label: Text(
+                  student.isVerified ? "Verified" : "Verify",
+                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: student.isVerified ? Colors.green : Colors.blue,
+                  backgroundColor: student.isVerified
+                      ? Colors.green
+                      : Colors.blue,
                 ),
                 onPressed: student.isVerified
                     ? null
                     : () async {
-                  final result = await Navigator.push(
+                  // Pass the whole Student object here
+                  final result = await Navigator.push<bool>(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => LiveFaceVerificationScreen(
-                        student: student,
-                      ),
+                      builder: (_) =>
+                          LiveFaceVerificationScreen(
+                            student: student,
+                          ),
                     ),
                   );
 
+                  // If verification was successful, update student
                   if (result == true) {
-                    _handleVerificationResult(student.rollNumber, true);
+                    _handleVerificationResult(
+                        student.rollNumber, true);
                   }
                 },
               ),

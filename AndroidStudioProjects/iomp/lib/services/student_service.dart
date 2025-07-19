@@ -4,7 +4,7 @@ import '../models/student.dart';
 
 class StudentService {
   static Future<List<Student>> fetchStudents(String department, String room) async {
-    final url = Uri.parse('http://192.168.40.71:5001/students?department=$department&room=$room');
+    final url = Uri.parse('http://192.168.0.131:5001/students?department=$department&room=$room');
 
     final response = await http.get(url);
 
